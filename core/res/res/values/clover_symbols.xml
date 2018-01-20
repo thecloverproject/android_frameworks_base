@@ -87,4 +87,7 @@
     <java-symbol type="string" name="config_stockFingerprint" />
     <java-symbol type="string" name="config_netflixSpoofModel" />
 
+    <!-- Defines the actions shown in advanced reboot submenu -->
+    <java-symbol type="array" name="config_restartActionsList" />
+
 </resources>
