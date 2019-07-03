@@ -19,6 +19,7 @@ package com.android.systemui.statusbar.policy
 import android.app.admin.DeviceAdminInfo
 import android.content.ComponentName
 import android.graphics.drawable.Drawable
+import com.android.internal.net.VpnProfile
 import com.android.systemui.supervision.data.model.SupervisionModel
 import java.io.PrintWriter
 
@@ -97,6 +98,16 @@ class FakeSecurityController(private val fakeState: FakeState = FakeState()) : S
     override fun getLabel(info: DeviceAdminInfo?): CharSequence? = null
 
     override fun getLabel(): CharSequence? = null
+
+    override fun getConfiguredLegacyVpns(): List<VpnProfile> = listOf()
+
+    override fun getVpnAppPackageNames(): List<String> = listOf()
+
+    override fun connectLegacyVpn(profile: VpnProfile) {}
+
+    override fun launchVpnApp(packageName: String) {}
+
+    override fun disconnectPrimaryVpn() {}
 
     override fun getSupervisionModel(): SupervisionModel? = fakeState.supervisionModel
 
