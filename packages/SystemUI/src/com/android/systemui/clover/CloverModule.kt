@@ -19,6 +19,7 @@ package com.android.systemui.clover
 import com.android.systemui.qs.tileimpl.QSTileImpl
 import com.android.systemui.qs.tiles.AmbientDisplayTile
 import com.android.systemui.qs.tiles.AODTile
+import com.android.systemui.qs.tiles.AutoBrightnessTile
 import com.android.systemui.qs.tiles.CaffeineTile
 import com.android.systemui.qs.tiles.DataSwitchTile
 import com.android.systemui.qs.tiles.HeadsUpTile
@@ -80,4 +81,10 @@ interface CloverModule {
     @IntoMap
     @StringKey(VpnTile.TILE_SPEC)
     fun bindVpnTile(vpnTile: VpnTile): QSTileImpl<*>
+
+    /** Inject AutoBrightnessTile into tileMap in QSModule */
+    @Binds
+    @IntoMap
+    @StringKey(AutoBrightnessTile.TILE_SPEC)
+    fun bindAutoBrightnessTile(autobrightnessTile: AutoBrightnessTile): QSTileImpl<*>
 }
