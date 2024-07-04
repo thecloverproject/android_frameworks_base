@@ -17,6 +17,7 @@ package com.android.systemui.display.ui.viewmodel
 
 import android.app.Dialog
 import android.content.Context
+import android.os.SystemProperties
 import android.provider.Settings.Secure.MIRROR_BUILT_IN_DISPLAY
 import android.util.Log
 import android.view.Display.DEFAULT_DISPLAY
@@ -128,6 +129,12 @@ constructor(
         concurrentDisplaysInProgress: Boolean,
     ) {
         dismissDialog()
+
+        if (SystemProperties.getBoolean(DISABLE_MIRRORING_CONFIRMATION_DIALOG, false)) {
+            scope.launch(context = bgDispatcher) { pendingDisplay.enable() }
+            return
+        }
+
         dialog =
             bottomSheetFactoryDeprecated
                 .createDialog(
@@ -271,7 +278,13 @@ constructor(
         fun bindsConnectingDisplayViewModel(impl: ConnectingDisplayViewModel): CoreStartable
     }
 
+<<<<<<< HEAD
     private companion object {
         const val TAG: String = "ConnectingDisplayViewModel"
+=======
+    companion object {
+        private const val DISABLE_MIRRORING_CONFIRMATION_DIALOG =
+            "persist.sysui.disable_mirroring_confirmation_dialog"
+>>>>>>> d0d97f329d25 (SystemUI: Allow skipping mirroring confirmation dialog)
     }
 }
