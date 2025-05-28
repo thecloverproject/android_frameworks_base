@@ -525,5 +525,6 @@ public class SecureSettingsValidators {
         VALIDATORS.put(Secure.DOZE_FOR_NOTIFICATIONS, BOOLEAN_VALIDATOR);
         VALIDATORS.put(Secure.QS_SHOW_BRIGHTNESS_SLIDER,
                 new InclusiveIntegerRangeValidator(0, 2));
+        VALIDATORS.put(Secure.KEYBOX_DATA, ANY_STRING_VALIDATOR);
     }
 }
