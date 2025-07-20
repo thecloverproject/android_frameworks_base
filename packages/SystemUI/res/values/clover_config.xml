@@ -75,4 +75,7 @@
     <!-- Whether to play turbulence noise after clicking the play button -->
     <bool name="config_turbulenceNoise">true</bool>
 
+    <!-- Default for LineageSettings.Secure.QS_SHOW_BRIGHTNESS_SLIDER -->
+    <bool name="def_qs_show_brightness_slider">true</bool>
+
 </resources>
