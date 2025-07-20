@@ -13852,6 +13852,14 @@ public final class Settings {
         public static final String DOZE_PICK_UP_GESTURE_AMBIENT = "doze_pick_up_gesture_ambient";
 
         /**
+         * Brightness slider position in the quick settings panel
+         * 0 = Top
+         * 1 = Bottom
+         * @hide
+         */
+        public static final String QS_BRIGHTNESS_SLIDER_POSITION = "qs_brightness_slider_position";
+
+        /**
          * These entries are considered common between the personal and the managed profile,
          * since the managed profile doesn't get to change them.
          */
