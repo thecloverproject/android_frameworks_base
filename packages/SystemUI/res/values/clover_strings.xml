@@ -104,4 +104,7 @@
     <!-- 4G icon instead LTE -->
     <string name="fourg_icon_title">4G icon</string>
 
+    <!-- WiFi Standard icon -->
+    <string name="wifi_standard_icon_title">WiFi standard</string>
+
 </resources>
