@@ -387,43 +387,70 @@ public final class PixelPropsUtils {
             return;
         }
 
+        String savedProps = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.PIF_DATA);
+        if (TextUtils.isEmpty(savedProps)) {
+            savedProps = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.FETCHED_PIF);
+        }
+
+        if (!TextUtils.isEmpty(savedProps)) {
+            if (DEBUG) Log.d(TAG, "Parsing props fetched / provided by user");
+            try {
+                JSONObject parsedProps = new JSONObject(savedProps);
+                Iterator<String> keys = parsedProps.keys();
+                List<String> fresh = new ArrayList<>();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String value = parsedProps.getString(key);
+                    fresh.add(key + ":" + value);
+                }
+                sCertifiedProps = fresh;
+                sCertPropsMtime = -1;
+                applyCertifiedProps();
+                return;
+            } catch (JSONException e) {
+                Log.e(TAG, "Error parsing JSON data from Settings", e);
+            }
+        }
+
         File dataFile = new File(Environment.getDataSystemDirectory(), DATA_FILE);
         long mtime = dataFile.exists() ? dataFile.lastModified() : -1;
 
-        if (mtime == sCertPropsMtime && sCertifiedProps != null && !sCertifiedProps.isEmpty()) {
-            if (DEBUG) Log.d(TAG, "New certification props not found, applying existing ones");
-            applyCertifiedProps();
-            return;
+        if (dataFile.exists()) {
+            if (mtime > 0 && mtime == sCertPropsMtime && sCertifiedProps != null && !sCertifiedProps.isEmpty()) {
+                if (DEBUG) Log.d(TAG, "New certification props not found, applying existing ones");
+                applyCertifiedProps();
+                return;
+            }
+
+            if (DEBUG) Log.d(TAG, "Parsing props from JSON file");
+            String content = readFromFile(dataFile);
+            try {
+                JSONObject parsedProps = new JSONObject(content);
+                Iterator<String> keys = parsedProps.keys();
+                List<String> fresh = new ArrayList<>();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String value = parsedProps.getString(key);
+                    fresh.add(key + ":" + value);
+                }
+                sCertifiedProps = fresh;
+                sCertPropsMtime = mtime;
+                applyCertifiedProps();
+                return;
+            } catch (JSONException e) {
+                Log.e(TAG, "Error parsing JSON data from file", e);
+            }
         }
 
-        String savedProps = readFromFile(dataFile);
-        List<String> fresh = new ArrayList<>();
-        if (TextUtils.isEmpty(savedProps)) {
-            if (DEBUG) Log.d(TAG, "Certification props not available! Not applied.");
-            return;
-        }
-        if (DEBUG) Log.d(TAG, "Parsing props fetched by attestation service");
-        try {
-            JSONObject parsedProps = new JSONObject(savedProps);
-            Iterator<String> keys = parsedProps.keys();
-            while (keys.hasNext()) {
-                String key = keys.next();
-                String value = parsedProps.getString(key);
-                fresh.add(key + ":" + value);
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "Error parsing JSON data", e);
-            return;
-        }
-        sCertifiedProps = new ArrayList<>(fresh);
-        sCertPropsMtime = mtime;
-        if (sCertifiedProps != null && !sCertifiedProps.isEmpty()) {
-            if (DEBUG) Log.d(TAG, "New certification props found, applying new ones");
-            applyCertifiedProps();
-        }
+        if (DEBUG) Log.d(TAG, "Parsing props locally as fallback");
+        String[] array = context.getResources().getStringArray(R.array.config_certifiedBuildProperties);
+        sCertifiedProps = new ArrayList<>(Arrays.asList(array));
+        sCertPropsMtime = -1;
+        applyCertifiedProps();
     }
 
     private static void applyCertifiedProps() {
+        if (sCertifiedProps == null || sCertifiedProps.isEmpty()) return;
         for (String entry : sCertifiedProps) {
             String[] kv = entry.split(":", 2);
             if (kv.length == 2) setPropValue(kv[0], kv[1]);

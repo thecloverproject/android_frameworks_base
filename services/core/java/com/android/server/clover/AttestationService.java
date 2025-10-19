@@ -53,7 +53,6 @@ public final class AttestationService extends SystemService {
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
 
     private final Context mContext;
-    private final File mDataFile;
     private final ScheduledExecutorService mScheduler;
     private final ConnectivityManager mConnectivityManager;
     private final FetchGmsCertifiedProps mFetchRunnable;
@@ -67,7 +66,6 @@ public final class AttestationService extends SystemService {
     public AttestationService(Context context) {
         super(context);
         mContext = context;
-        mDataFile = new File(Environment.getDataSystemDirectory(), DATA_FILE);
         mFetchRunnable = new FetchGmsCertifiedProps();
         mScheduler = Executors.newSingleThreadScheduledExecutor();
         mConnectivityManager =
@@ -85,42 +83,6 @@ public final class AttestationService extends SystemService {
             Log.i(TAG, "Scheduling the service");
             mScheduler.scheduleAtFixedRate(
                     mFetchRunnable, INITIAL_DELAY, INTERVAL, TimeUnit.HOURS);
-        }
-    }
-
-    private String readFromFile(File file) {
-        StringBuilder content = new StringBuilder();
-
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    content.append(line);
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Error reading from file", e);
-            }
-        }
-        return content.toString();
-    }
-
-    private void writeToFile(File file, String data) {
-        AtomicFile aFile = new AtomicFile(file);
-        FileOutputStream fos = null;
-        try {
-            fos = aFile.startWrite();
-            fos.write(data.getBytes(StandardCharsets.UTF_8));
-            aFile.finishWrite(fos);
-            try {
-                Os.chmod(file.getAbsolutePath(), 0644);
-            } catch (ErrnoException ignored) {}
-            SELinux.restorecon(file);
-        } catch (IOException e) {
-            if (fos != null) {
-                aFile.failWrite(fos);
-            }
-            Log.e(TAG, "Error writing to file", e);
         }
     }
 
@@ -207,7 +169,7 @@ public final class AttestationService extends SystemService {
                 }
                 mPendingUpdate = false;
 
-                String savedProps = readFromFile(mDataFile);
+                String savedProps = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.FETCHED_PIF);
                 String props = fetchProps();
                 if (props != null) {
                     try {
@@ -219,7 +181,7 @@ public final class AttestationService extends SystemService {
                 }
                 if (props != null && !savedProps.equals(props)) {
                     dlog("Found new props");
-                    writeToFile(mDataFile, props);
+                    Settings.Secure.putString(mContext.getContentResolver(), Settings.Secure.FETCHED_PIF, props);
                     mLastSuccessFetchMs = System.currentTimeMillis();
                     dlog("FetchGmsCertifiedProps completed");
                 } else {
