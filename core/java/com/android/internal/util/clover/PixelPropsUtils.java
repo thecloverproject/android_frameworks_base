@@ -241,6 +241,7 @@ public final class PixelPropsUtils {
     public static void setProps(Context context) {
         final String packageName = context.getPackageName();
         if (packageName == null || packageName.isEmpty()) {
+            if (DEBUG) Log.d(TAG, "Null received in setProps.");
             return;
         }
 
@@ -252,12 +253,13 @@ public final class PixelPropsUtils {
             if (packageName.equals("com.google.android.apps.photos")) {
                 if (Settings.Secure.getInt(context.getContentResolver(),
                         Settings.Secure.PI_PHOTOS_SPOOF, 1) == 1) {
+                    if (DEBUG) Log.d(TAG, "Gphotos spoofing disabled by setting");
                     propsToChange = propsToChangePixelXL;
                 }
             } else if (packageName.equals("com.netflix.mediaclient") &&
                         Settings.Secure.getInt(context.getContentResolver(),
                         Settings.Secure.PI_NETFLIX_SPOOF, 0) != 1) {
-                    if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
+                    if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by setting");
                     return;
             } else if (packageName.equals("com.google.android.gms")) {
                 final String processName = Application.getProcessName().toLowerCase();
@@ -337,6 +339,7 @@ public final class PixelPropsUtils {
 
     private static boolean isDeviceTablet(Context context) {
         if (context == null) {
+            if (DEBUG) Log.d(TAG, "Null received in isDeviceTablet.");
             return false;
         }
         Configuration config = context.getResources().getConfiguration();
@@ -374,14 +377,16 @@ public final class PixelPropsUtils {
 
     private static void spoofBuildGms(Context context) {
         if (Settings.Secure.getInt(context.getContentResolver(),
-                Settings.Secure.PI_ENABLE_SPOOF, 1) != 1)
+                Settings.Secure.PI_ENABLE_SPOOF, 1) != 1) {
+            if (DEBUG) Log.d(TAG, "GMS spoofing disabled by setting");
             return;
-
+        }
 
         File dataFile = new File(Environment.getDataSystemDirectory(), DATA_FILE);
         long mtime = dataFile.exists() ? dataFile.lastModified() : -1;
 
         if (mtime == sCertPropsMtime && sCertifiedProps != null && !sCertifiedProps.isEmpty()) {
+            if (DEBUG) Log.d(TAG, "New certification props not found, applying existing ones");
             applyCertifiedProps();
             return;
         }
@@ -389,6 +394,7 @@ public final class PixelPropsUtils {
         String savedProps = readFromFile(dataFile);
         List<String> fresh = new ArrayList<>();
         if (TextUtils.isEmpty(savedProps)) {
+            if (DEBUG) Log.d(TAG, "Certification props not available! Not applied.");
             return;
         }
         if (DEBUG) Log.d(TAG, "Parsing props fetched by attestation service");
@@ -407,6 +413,7 @@ public final class PixelPropsUtils {
         sCertifiedProps = new ArrayList<>(fresh);
         sCertPropsMtime = mtime;
         if (sCertifiedProps != null && !sCertifiedProps.isEmpty()) {
+            if (DEBUG) Log.d(TAG, "New certification props found, applying new ones");
             applyCertifiedProps();
         }
     }
@@ -447,11 +454,16 @@ public final class PixelPropsUtils {
         Context context = ActivityThread.currentApplication() != null
                 ? ActivityThread.currentApplication().getApplicationContext()
                 : null;
-        if (context == null) return;
+        if (context == null) {
+            if (DEBUG) Log.d(TAG, "Null received in onEngineGetCertificateChain.");
+            return;
+        }
 
         if (Settings.Secure.getInt(context.getContentResolver(),
-                Settings.Secure.PI_ENABLE_SPOOF, 1) != 1)
+                Settings.Secure.PI_ENABLE_SPOOF, 1) != 1) {
+            if (DEBUG) Log.d(TAG, "onEngineGetCertificateChain disabled by setting");
             return;
+        }
 
         // If a keybox is found, don't block key attestation
         if (Settings.Secure.getInt(context.getContentResolver(),
