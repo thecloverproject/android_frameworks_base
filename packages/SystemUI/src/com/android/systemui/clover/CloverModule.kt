@@ -16,6 +16,9 @@
 
 package com.android.systemui.clover
 
+import com.android.systemui.qs.QsEventLogger
+import com.android.systemui.qs.pipeline.shared.TileSpec
+import com.android.systemui.qs.shared.model.TileCategory
 import com.android.systemui.qs.tileimpl.QSTileImpl
 import com.android.systemui.qs.tiles.AmbientDisplayTile
 import com.android.systemui.qs.tiles.AODTile
@@ -26,9 +29,13 @@ import com.android.systemui.qs.tiles.HeadsUpTile
 import com.android.systemui.qs.tiles.SyncTile
 import com.android.systemui.qs.tiles.UsbTetherTile
 import com.android.systemui.qs.tiles.VpnTile
+import com.android.systemui.qs.tiles.base.shared.model.QSTileConfig
+import com.android.systemui.qs.tiles.base.shared.model.QSTileUIConfig
+import com.android.systemui.res.R
 
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
@@ -87,4 +94,151 @@ interface CloverModule {
     @IntoMap
     @StringKey(VpnTile.TILE_SPEC)
     fun bindVpnTile(vpnTile: VpnTile): QSTileImpl<*>
+
+    companion object {
+        const val AMBIENT_DISPLAY_TILE_SPEC = "ambient_display"
+        const val AOD_TILE_SPEC = "aod"
+        const val AUTO_BRIGHTNESS_TILE_SPEC = "autobrightness"
+        const val CAFFEINE_TILE_SPEC = "caffeine"
+        const val DATA_SWITCH_TILE_SPEC = "dataswitch"
+        const val HEADS_UP_TILE_SPEC = "heads_up"
+        const val SYNC_TILE_SPEC = "sync"
+        const val USB_TETHER_TILE_SPEC = "usb_tether"
+        const val VPN_TILE_SPEC = "vpn"
+
+        @Provides
+        @IntoMap
+        @StringKey(AMBIENT_DISPLAY_TILE_SPEC)
+        fun provideAmbientDisplayTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(AMBIENT_DISPLAY_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_ambient_display,
+                        labelRes = R.string.quick_settings_ambient_display_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.DISPLAY,
+            )
+        
+        @Provides
+        @IntoMap
+        @StringKey(AOD_TILE_SPEC)
+        fun provideAodTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(AOD_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_aod,
+                        labelRes = R.string.quick_settings_aod_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.DISPLAY,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(AUTO_BRIGHTNESS_TILE_SPEC)
+        fun provideAutoBrightnessTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(AUTO_BRIGHTNESS_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_autobrightness,
+                        labelRes = R.string.quick_settings_autobrightness_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.DISPLAY,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(CAFFEINE_TILE_SPEC)
+        fun provideCaffeineTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(CAFFEINE_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_caffeine,
+                        labelRes = R.string.quick_settings_caffeine_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.DISPLAY,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(DATA_SWITCH_TILE_SPEC)
+        fun provideDataSwitchTile(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(DATA_SWITCH_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_data_switch_0,
+                        labelRes = R.string.qs_data_switch_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.CONNECTIVITY,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(HEADS_UP_TILE_SPEC)
+        fun provideHeadsUpTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(HEADS_UP_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_heads_up,
+                        labelRes = R.string.quick_settings_heads_up_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.ACCESSIBILITY,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(SYNC_TILE_SPEC)
+        fun provideSyncTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(SYNC_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_sync,
+                        labelRes = R.string.quick_settings_sync_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.CONNECTIVITY,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(USB_TETHER_TILE_SPEC)
+        fun provideUsbTetherTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(USB_TETHER_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_usb_tether,
+                        labelRes = R.string.quick_settings_usb_tether_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.CONNECTIVITY,
+            )
+
+        @Provides
+        @IntoMap
+        @StringKey(VPN_TILE_SPEC)
+        fun provideVpnTileConfig(uiEventLogger: QsEventLogger): QSTileConfig =
+            QSTileConfig(
+                tileSpec = TileSpec.create(VPN_TILE_SPEC),
+                uiConfig =
+                    QSTileUIConfig.Resource(
+                        iconRes = R.drawable.ic_qs_vpn,
+                        labelRes = R.string.quick_settings_vpn_label
+                    ),
+                instanceId = uiEventLogger.getNewInstanceId(),
+                category = TileCategory.CONNECTIVITY,
+            )
+    }
 }
