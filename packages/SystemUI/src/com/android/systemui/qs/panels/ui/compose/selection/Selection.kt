@@ -199,7 +199,6 @@ private fun Modifier.selectionBorder(
         when (shapeMode) {
             1 -> InactiveCornerRadius.toPx()
             2 -> ActiveTileCornerRadius.toPx()
-            3 -> 0f
             else -> InactiveCornerRadius.toPx()
         }
     }

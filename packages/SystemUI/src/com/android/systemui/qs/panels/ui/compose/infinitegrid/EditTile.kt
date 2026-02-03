@@ -1401,7 +1401,6 @@ private fun editTileShape(shapeMode: Int): RoundedCornerShape {
     val radius = when (shapeMode) {
         1 -> InactiveCornerRadius // circle-ish
         2 -> ActiveTileCornerRadius // rounded square
-        3 -> 0.dp // square
         else -> InactiveCornerRadius
     }
     return RoundedCornerShape(radius)

@@ -154,7 +154,6 @@ fun BrightnessSlider(
     val trackCornerDp: Dp = when (shapeMode) {
         1 -> 24.dp  /* Circle */
         2 -> 12.dp  /* Rounded Square */
-        3 -> 0.dp /* Square */
         else -> Dimensions.SliderTrackRoundedCorner
     }
     var value by remember(gammaValue) { mutableIntStateOf(gammaValue) }
@@ -484,7 +483,6 @@ private fun drawAutoBrightnessButton(
     val autoIconShape = when (shapeMode) {
         1 -> CircleShape
         2 -> RoundedCornerShape(12.dp)
-        3 -> RoundedCornerShape(0.dp)
         else -> RoundedCornerShape(animatedCornerRadius)
     }
     val backgroundColor by animateColorAsState(
@@ -562,13 +560,11 @@ fun BrightnessSliderContainer(
     val trackCornerDp: Dp = when (shapeMode) {
         1 -> 24.dp  /* Circle */
         2 -> 12.dp  /* Rounded Square */
-        3 -> 0.dp /* Square */
         else -> Dimensions.SliderTrackRoundedCorner
     }
     val bgCornerDp: Dp = when (shapeMode) {
         1 -> 50.dp  /* Circle */
         2 -> 24.dp  /* Rounded Square */
-        3 -> 0.dp /* Square */
         else -> Dimensions.SliderBackgroundRoundedCorner
     }
 

@@ -654,7 +654,6 @@ private object TileDefaults {
                 targetValue = when (shapeMode) {
                         1 -> InactiveCornerRadius /* Circle */
                         2 -> activeCornerRadius /* Rounded Square */
-                        3 -> 0.dp /* Square */
                         else -> if (state == STATE_ACTIVE) activeCornerRadius else InactiveCornerRadius
                     },
                 label = label,
